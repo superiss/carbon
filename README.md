@@ -4,6 +4,12 @@ a Pool of key-value database with TTL, Fast & Concurrent Safe.
 key(string)
 value([]byte)
 
+## Usage
+To install:
+`
+go get github.com/superiss/carbon
+`
+
 ## NewBucket:
 create a new pool where database will be stored
 ```go
