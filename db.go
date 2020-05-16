@@ -47,6 +47,7 @@ type value struct {
 // Set method
 func (db *DB) Set(key string, data []byte, ttl time.Duration) {
 	db.mu.Lock()
+	defer db.mu.Unlock()
 	// value
 	val := &value{
 		data: data,
@@ -55,7 +56,6 @@ func (db *DB) Set(key string, data []byte, ttl time.Duration) {
 	}
 	//
 	db.table[key] = val // set value to DB
-	db.mu.Unlock()
 }
 
 // Get method
