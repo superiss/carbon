@@ -71,12 +71,11 @@ func (db *DB) Get(key string) ([]byte, bool) {
 }
 
 // size method
-func (db *DB) size() (size int) {
+func (db *DB) size() int {
 	db.mu.RLock()
 	defer db.mu.RUnlock()
 	//
-	size = len(db.table)
-	return
+	return len(db.table)
 }
 
 // reset table & keeper
