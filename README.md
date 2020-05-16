@@ -16,7 +16,7 @@ create a new pool where database will be stored
 bucket := carbon.NewBucket() // new bucket
 defer bucket.Stop() // always defer Stop()
 //
-db, err := bucket.CreateDB("cache_db", 1)
+db, err := bucket.CreateDB("cache_db", 1*time.Second)
 if err!=nil{
     // handle err
 }
@@ -28,9 +28,9 @@ value, ok := db.Get(s)
 ```
 # (b *Bucket)Methods
 ## CreateDB(name string, duration int) (*DB, error)
-Create a new DB w/ a given "name" and "duration" in seconds used for the cleaning interval 
+Create a new DB w/ a given "name" and "duration" used for the cleaning interval 
 ```go
-db, err := bucket.CreateDB("cache", 10) // the cleaner will clean the database every 10s
+db, err := bucket.CreateDB("cache", 10*time.Second) // the cleaner will clean the database every 10s
 if err!=nil{
     // handle err
 }
@@ -84,24 +84,23 @@ value, ok := db.Get(s)
 ## Benchmark test
 ```go
 func BenchmarkBucketDB(b *testing.B) {
-    bucket := carbon.NewBucket()
-    defer bucket.Stop()
-    //
-    db, _ := bucket.CreateDB("cache", 1)
-    for n := 0; n < b.N; n++ {
-        s := fmt.Sprint(n)
-        db.Set(s, []byte(s), 10*time.Minute)
-        db.Get(s)
-    }
-    fmt.Println(bucket.Stats())
+	bucket := carbon.NewBucket()
+	defer bucket.Stop()
+	//
+	db, _ := bucket.CreateDB("test", 1*time.Second)
+	for n := 0; n < b.N; n++ {
+		s := fmt.Sprint(n)
+		db.Set(s, []byte(s), 10*time.Minute)
+		db.Get(s)
+	}
 }
 ```
 results on my PC
 
 `
-1000000              1606 ns/op             335 B/op          5 allocs/op
+BenchmarkBucketDB-4      1757749               921 ns/op             228 B/op          4 allocs/op
 PASS
-ok      carbon  1.680s
+ok      carbon  3.734s
 `
 
 ## Concurrent test
@@ -109,7 +108,7 @@ ok      carbon  1.680s
 bucket := carbon.NewBucket()
 defer bucket.Stop()
 //
-db, _ := bucket.CreateDB("cache", 1)
+db, _ := bucket.CreateDB("cache", 1*time.Second)
 //
 for n := 0; n < 200000; n++ {
 	s := fmt.Sprint(n)

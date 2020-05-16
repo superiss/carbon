@@ -27,23 +27,18 @@ func NewBucket() *Bucket {
 // CreateDB := create a new database
 // with given "name" and "duration"
 // interval to call cleaner func
-func (b *Bucket) CreateDB(name string, duration int) (*DB, error) {
+func (b *Bucket) CreateDB(name string, duration time.Duration) (*DB, error) {
 	// check if database already exists
-	_, ok := b.pool[name]
-
 	// if found, must choose a different name
-	if ok {
+	if _, ok := b.pool[name]; ok {
 		return nil, errFound
 	}
-	// convert from nanoseconds to seconds
-	interval := time.Duration(duration * 1e+9)
 	//
 	db := &DB{
 		name:   name,
 		table:  map[string]*value{},
-		keeper: map[string]*timer{},
 		stop:   make(chan bool, 1),
-		ticker: time.NewTicker(interval),
+		ticker: time.NewTicker(duration),
 		mu:     &sync.RWMutex{},
 	}
 	// add DB to pool
@@ -62,6 +57,7 @@ func (b *Bucket) FindDB(name string) (*DB, error) {
 	if !ok {
 		return nil, errNotFound
 	}
+	//
 	return db, nil
 }
 
@@ -87,12 +83,10 @@ func (b *Bucket) RemoveDB(name string) error {
 	if !ok {
 		return errNotFound
 	}
-
 	// stop DB and it cleaner
 	db.shutdown()
 	// delete it found
 	delete(b.pool, name)
-
 	//
 	return nil
 }
