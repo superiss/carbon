@@ -27,7 +27,7 @@ db.Set(s, []byte(s), 10*time.Minute)
 value, ok := db.Get(s)
 ```
 # (b *Bucket)Methods
-## CreateDB(name string, duration int) (*DB, error)
+## CreateDB(name string, duration time.Duration) (*DB, error)
 Create a new DB w/ a given "name" and "duration" used for the cleaning interval 
 ```go
 db, err := bucket.CreateDB("cache", 10*time.Second) // the cleaner will clean the database every 10s
