@@ -11,12 +11,12 @@ go get github.com/superiss/carbon
 `
 
 ## NewBucket:
-create a new pool where database will be stored
+create a new pool where database will be stored, with a given time interval for cleaning.
 ```go
-bucket := carbon.NewBucket() // new bucket
+bucket := carbon.NewBucket(10*time.Second) // new bucket
 defer bucket.Stop() // always defer Stop()
 //
-db, err := bucket.CreateDB("cache_db", 1*time.Second)
+db, err := bucket.CreateDB("cache_db")
 if err!=nil{
     // handle err
 }
@@ -28,9 +28,9 @@ value, ok := db.Get(s)
 ```
 # (b *Bucket)Methods
 ## CreateDB(name string, duration time.Duration) (*DB, error)
-Create a new DB w/ a given "name" and "duration" used for the cleaning interval 
+Create a new DB w/ a given "name"
 ```go
-db, err := bucket.CreateDB("cache", 10*time.Second) // the cleaner will clean the database every 10s
+db, err := bucket.CreateDB("cache") // the cleaner will clean the database every 10s
 if err!=nil{
     // handle err
 }
