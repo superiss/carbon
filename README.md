@@ -1,4 +1,4 @@
-# Carbon a Pool of key-value database
+# Carbon: a Pool of key-value database
 a Pool of key-value database with TTL, Fast & Concurrent Safe.
 
 key(string)
@@ -10,7 +10,7 @@ To install:
 go get github.com/superiss/carbon
 `
 
-## NewBucket:
+## NewBucket(duration time.Duration):
 create a new pool where database will be stored, with a given time interval for cleaning.
 ```go
 bucket := carbon.NewBucket(10*time.Second) // new bucket
@@ -27,7 +27,7 @@ db.Set(s, []byte(s), 10*time.Minute)
 value, ok := db.Get(s)
 ```
 # (b *Bucket)Methods
-## CreateDB(name string, duration time.Duration) (*DB, error)
+## CreateDB(name string) (*DB, error)
 Create a new DB w/ a given "name"
 ```go
 db, err := bucket.CreateDB("cache") // the cleaner will clean the database every 10s
